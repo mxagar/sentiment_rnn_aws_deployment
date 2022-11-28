@@ -9,7 +9,7 @@ Table of Contents:
 - [Sentiment Analysis RNN Deployed Using AWS SageMaker](#sentiment-analysis-rnn-deployed-using-aws-sagemaker)
   - [How to Use This](#how-to-use-this)
     - [Overview of Files and Contents](#overview-of-files-and-contents)
-    - [Git Interaction](#git-interaction)
+    - [CLI and Git](#cli-and-git)
     - [Dependencies](#dependencies)
     - [Model Integration](#model-integration)
     - [App Usage](#app-usage)
@@ -77,9 +77,59 @@ The project folder contains the following files:
 
 The notebook [`SageMaker_Sentiment_Analysis_Project.ipynb`](src/SageMaker_Sentiment_Analysis_Project) is the main file which guides the complete model creation and its deployment.
 
-### Git Interaction
+### CLI and Git
 
-:construction:
+In the notebook instance, we can open a Terminal with the launcher, which gives us access to the EC2 instance on which the notebook is running:
+
+```bash
+pwd # /home/ec2-user
+cd SageMaker
+ll
+# sentiment_rnn_aws_deployment # the repo cloned via the GUI
+# lost+found
+```
+
+There are several ways to push/pull to repositories that were cloned with their HTTPS version; I use **Personal Access Tokens**. Steps to set up a token credential:
+
+- Create a token on Github: Github Settings > Developer Settings > Personal Access Token: Create.
+- In the notebook instance terminal, set user account and activate credential storing:
+
+```bash
+# Open Terminal and set user account
+git config --global user.email "my@email.com"
+git config --global user.name "my_username"
+
+# Activate credential storing to local file
+# If we use 
+#   credendial.helper cache
+# instead of
+#   credendial.helper store
+# the credential (token) is saved to memory
+git config --global credential.helper store
+
+git pull
+
+# Edit something
+git add .
+git commit -m "message"
+git push
+# Input
+# - username
+# - pw: token
+
+# Check that the credential is there!
+# If we chose 'store', it should be there
+less ~/.git-credentials
+```
+
+Later on, to push, either do it in the Terminal, or using the GUI: left menu panel, Git icon.
+
+Note that with the option `credendial.helper store` a file is stored with our credentials, without encryption!
+
+More information:
+
+- [Pushing to HTTPS repositories](https://repost.aws/questions/QU-P1Hlk4OR6K6kAug-wHT_g/can-sagemaker-git-repositories-use-ssh-secrets-no-name-and-password)
+- [Git Credentials Storage](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage)
 
 ### Dependencies
 
