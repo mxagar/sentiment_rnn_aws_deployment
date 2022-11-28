@@ -113,6 +113,9 @@ While AWS SageMaker has plenty of container images ready for specific models (e.
 
 :construction:
 
+- Improve the html web app.
+- Improve the model: add more layers.
+
 ## Interesting Links
 
 - [My notes and code](https://github.com/mxagar/deep_learning_udacity) on the [Udacity Deep Learning Nanodegree](https://www.udacity.com/course/deep-learning-nanodegree--nd101). A more detailed guide on AWS SageMaker can be found in the file [`DLND_Deployment.md`](https://github.com/mxagar/deep_learning_udacity/blob/main/06_Deployment/DLND_Deployment.md) from that repository.
