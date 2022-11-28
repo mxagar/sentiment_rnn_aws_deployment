@@ -54,10 +54,20 @@ Now that the repository has been cloned into the notebook instance you may navig
 
 Project [rubric](https://review.udacity.com/#!/rubrics/2262/view).
 
-- Files to be submitted:
+- All required files submitted:
     - `SageMaker Project.ipynb`, completed + in PDF/HTML, as `report.pdf/html`.
     - `train/train.py`
     - `serve/predict.py`
     - `website/index.html`
-- A
-- 
+- Explain `review_to_words()`.
+- Implement `build_dict()` to create a vocabulary.
+- Display 5 most frequent words.
+- Explain `preprocess_data()` and `convert_and_pad_data()`.
+- Implement `train.py` and train the model.
+- Compare the model with XGBoost.
+- Process the test review.
+- Implement `predict_fn()` in `serve/predict.py`
+- Implement the Lambda function and the API Gateway.
+- Update the `website/index.html` file with the endpoint URL.
+- Deploy the model.
+- Collect screenshots of example review inferences.
