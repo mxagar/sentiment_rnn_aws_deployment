@@ -57,6 +57,8 @@ The project folder contains the following files:
 ├── LICENSE                                           # Original Udacity license
 ├── README.md                                         # This file
 ├── assets                                            # Images and auxiliary assets
+│   ├── sagemaker_examples.py
+│   ├── sagemaker_examples_workflow.png
 │   └── web_app_architecture.jpg
 └── src
     ├── README.md
@@ -155,6 +157,13 @@ While AWS SageMaker has plenty of container images ready for specific models (e.
 
 :construction:
 
+The file [`assets/sagemaker_examples.py`](assets/sagemaker_examples.py) contains code blocks that can be re-used to build an application as the one defined and deployed in this repository; the following diagram shows how the different code blocks are related:
+
+<p align="center">
+  <img src="./assets/sagemaker_examples_workflow.png" alt="SageMaker Examples Workflow" width=750px>
+</p>
+
+
 ## Brief Notes on LSTM-Based Neural Networks
 
 :construction:
@@ -163,12 +172,14 @@ While AWS SageMaker has plenty of container images ready for specific models (e.
 
 :construction:
 
-- Improve the html web app.
-- Improve the model: add more layers.
+- [ ] Improve the html web app.
+- [ ] Improve the model: add more layers.
+- [ ] Use AWS SageMaker Studio instead of the notebook instances.
 
 ## Interesting Links
 
 - [My notes and code](https://github.com/mxagar/deep_learning_udacity) on the [Udacity Deep Learning Nanodegree](https://www.udacity.com/course/deep-learning-nanodegree--nd101). A more detailed guide on AWS SageMaker can be found in the file [`DLND_Deployment.md`](https://github.com/mxagar/deep_learning_udacity/blob/main/06_Deployment/DLND_Deployment.md) from that repository.
+- Tutorial on how to use AWS SageMaker: [sagemaker-deployment](https://github.com/mxagar/sagemaker-deployment).
 - My on-going compilation of resources for [text sentiment analysis](https://github.com/mxagar/text_sentiment).
 - More examples with RNNs using Pytorch: [Pytorch Guide](https://github.com/mxagar/deep_learning_udacity/blob/main/02_Pytorch_Guide/DL_Pytorch_Guide.md) (Section "Recursive Neural Networks").
 - My [NLP Guide](https://github.com/mxagar/nlp_guide).
