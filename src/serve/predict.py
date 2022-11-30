@@ -70,8 +70,11 @@ def predict_fn(input_data, model):
     #         data_X   - A sequence of length 500 which represents the converted review
     #         data_len - The length of the review
 
-    data_X = None
-    data_len = None
+    word_list = review_to_words(input_data)
+    index_list, length = convert_and_pad(model.word_dict, word_list, pad=500)
+    
+    data_X = index_list
+    data_len = length
 
     # Using data_X and data_len we construct an appropriate input tensor. Remember
     # that our model expects input data of the form 'len, review[500]'.
@@ -87,6 +90,6 @@ def predict_fn(input_data, model):
     # TODO: Compute the result of applying the model to the input data. The variable `result` should
     #       be a numpy array which contains a single integer which is either 1 or 0
 
-    result = None
-
-    return result
+    result = model(data)
+    
+    return result.cpu().numpy()
