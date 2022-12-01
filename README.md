@@ -4,6 +4,10 @@ This repository contains a Sentiment Analysis Recurrent Neural Network (RNN) bas
 
 The model is implemented with [Pytorch](https://pytorch.org/) and it uses materials from the [Udacity Deep Learning Nanodegree](https://www.udacity.com/course/deep-learning-nanodegree--nd101), which can be obtained in their original (non-implemented) form in [sagemaker-deployment](https://github.com/mxagar/sagemaker-deployment). That original repository, as well as the current one, serve as templates for similar projects.
 
+The dataset used for training is the [IMDB dataset](http://ai.stanford.edu/~amaas/data/sentiment/):
+
+> Maas, Andrew L., et al. [Learning Word Vectors for Sentiment Analysis](http://ai.stanford.edu/~amaas/data/sentiment/). In _Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies_. Association for Computational Linguistics, 2011.
+
 Table of Contents:
 
 - [Sentiment Analysis RNN Deployed Using AWS SageMaker](#sentiment-analysis-rnn-deployed-using-aws-sagemaker)
@@ -78,6 +82,8 @@ The project folder contains the following files:
 ```
 
 The notebook [`SageMaker_Sentiment_Analysis_Project.ipynb`](src/SageMaker_Sentiment_Analysis_Project) is the main file which guides the complete model creation and its deployment.
+
+Folders `data`, `cache`.
 
 ### CLI and Git
 
