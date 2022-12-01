@@ -19,7 +19,8 @@ Table of Contents:
     - [App Usage](#app-usage)
   - [Brief Notes on the Web App Architecture](#brief-notes-on-the-web-app-architecture)
   - [Brief Notes on AWS SageMaker](#brief-notes-on-aws-sagemaker)
-  - [Brief Notes on LSTM-Based Neural Networks](#brief-notes-on-lstm-based-neural-networks)
+  - [Brief Notes on the Chosen Model](#brief-notes-on-the-chosen-model)
+  - [Preliminary Results](#preliminary-results)
   - [Improvements, Next Steps](#improvements-next-steps)
   - [Interesting Links](#interesting-links)
   - [Authorship](#authorship)
@@ -61,29 +62,32 @@ The project folder contains the following files:
 ├── LICENSE                                           # Original Udacity license
 ├── README.md                                         # This file
 ├── assets                                            # Images and auxiliary assets
-│   ├── sagemaker_examples.py
-│   ├── sagemaker_examples_workflow.png
-│   └── web_app_architecture.jpg
+│   ├── sagemaker_examples.py                         # Exemplary code blocks for all step in SageMaker
+│   └── sagemaker_examples_workflow.png               # Workflow diagram for the exemplary code blocks
 └── src
     ├── README.md
     ├── SageMaker_Sentiment_Analysis_Project.ipynb    # Project notebook
     ├── Web_App_Diagram.svg
     ├── serve                                         # Files for deployment
-    │   ├── model.py
-    │   ├── predict.py
-    │   ├── requirements.txt
+    │   ├── model.py                                  # Model definition, derived from nn.Module
+    │   ├── predict.py                                # Inference script, entry point for the container
+    │   ├── requirements.txt                          # Dependencies installed in the deployment container
     │   └── utils.py
     ├── train                                         # Files for model training
-    │   ├── model.py
-    │   ├── requirements.txt
-    │   └── train.py
+    │   ├── model.py                                  # Same as in serve/
+    │   ├── requirements.txt                          # Dependencies installed in the training container
+    │   └── train.py                                  # Training script, entry point for the container
     └── website                                       # Web app HTML file
-        └── index.html
+        ├── index.html
+        ├── review_1.png                              # Example result 1
+        ├── review_2.png
+        ├── review_3.png
+        └── review_4.png
 ```
 
 The notebook [`SageMaker_Sentiment_Analysis_Project.ipynb`](src/SageMaker_Sentiment_Analysis_Project) is the main file which guides the complete model creation and its deployment.
 
-Folders `data`, `cache`.
+When that main notebook is run, the folders `data` and `cache` appear in the root project directory; these folders contain the downloaded dataset and generated artifacts/object, such as the created word dictionary.
 
 ### CLI and Git
 
@@ -141,27 +145,66 @@ More information:
 
 ### Dependencies
 
-Dependencies are resolved with the `requirements.txt` from [`train/`](train) and [`serve/`](serve).
+Dependencies are resolved with the `requirements.txt` from [`src/train/`](src/train) and [`src/serve/`](src/serve). Additionally, SageMaker is already set up to use the main notebook.
 
 ### Model Integration
 
-While AWS SageMaker has plenty of container images ready for specific models (e.g., XGBoost, Linear Learner, etc.), this project uses a Pytorch model which has custom scripts for its definition, training and inference. These scripts are located in the folders [`train/`](train) and [`serve/`](serve).
+While AWS SageMaker has plenty of container images ready for specific models (e.g., XGBoost, Linear Learner, etc.), this project uses a Pytorch model which has custom scripts for its definition, training and inference. These scripts are located in the folders [`src/train/`](train) and [`src/serve/`](src/serve).
+
+In particular:
+
+- The model definition is done is `model.py`, which is copied in both [`src/train/`](src/train) and [`src/serve/`](src/serve).
+- The folder [`src/train/`](src/train) contains the training script [`src/train/train.py`](src/train/train.py), which is the entry point for the training container.
+- The folder [`src/serve/`](src/src/serve) contains the training script [`src/serve/predict.py`](src/serve/predict.py), which is the entry point for the inference container that is deployed.
+
+All the details are explained in the main notebook.
 
 ### App Usage
 
-:construction:
+In order to use the app, we need to have:
+
+- All the cells in the main notebook executed (except the deletion of the deployment endpoints, at the end).
+- A Lambda function deployed, as explained in the notebook.
+- An API Gateway created, as explained in the notebook.
+- The API Gateway URL correctly specified in the [`src/website/index.html`](src/website/index.html) file.
+
+Once all is set up, we can locally open the [`src/website/index.html`](src/website/index.html) app with our local browser and we'll the following input field ready to use:
+
+<p align="center">
+  <img src="./assets/web_app_gui.png" alt="Web app GUI." width=500px>
+</p>
+
 
 ## Brief Notes on the Web App Architecture
 
+AWS models are deployed as containers that have endpoints waiting for requests. We can even deploy several models behind the same endpoint and the container itself routes the requests to the different models. However, those endpoints are only accessible by AWS authenticated services, i.e., we cannot use them directly over the internet without additional layers of processing.
+
+Therefore, the usual solution, and the one adopted here, consists in using an **API Gateway** combined with a **Lambda function**. The resulting architecture is schematically depicted below, and the list of steps taken to  score a review are the following:
+
+- The user submits a review in plain text to the publicly reachable API Gateway, which is a REST API.
+- The API catches the request (i.e., the review to be evaluated) and triggers a Lambda function, passing to it the review.
+- The Lambda function connects to the model endpoint and requests a scoring; it waits for the inferred value, and sends it back to the API Gateway.
+- The API Gateway packs the score as an HTML response and delivers it to the user.
+
 <p align="center">
-  <img src="./assets/web_app_architecture.jpg" alt="Web app architecture." width=500px>
+  <img src="./src/Web_App_Diagram.svg" alt="Web app architecture." width=500px>
 </p>
 
-:construction:
+Note that the user interacts with a simple GUI implemented in an HTML form; however, the API Gateway can be intefaced by any system that speaks HTTP methods, since it's in reality a REST API.
+
+Lambda functions have become extremely popular in cloud computing, since they allow *serverless* simple processings or interactions with a backend. That means we don't need to spin up a container / VM / server to execute the code in the lambda function, it is executed for the user seamlessly &mdash; of course, there's a server running behind, but we don't care about setting it up.
 
 ## Brief Notes on AWS SageMaker
 
-:construction:
+[AWS SageMaker](https://aws.amazon.com/pm/sagemaker/) is a cloud service by Amazon which enables the execution of all the major steps in a machine learning application hosted at AWS: (1) exploration and data processing, (2) modeling and (3) deployment. SageMaker is composed by three major elements:
+
+- SageMaker Studio
+- Notebook instances
+- The SageMaker API
+
+The SageMaker Studio is basically an IDE based on Jupyter Labs notebooks with additional Amazon extensions and plugins. However, this project still uses regular notebook instances.
+
+SageMaker works in such a way that dedicated containers are started via the API for training, testing and deploying models. The results or operation information (i.e., logs) of those containers can be consulted in the AWS console. Additionally, the datasets used for training as well as the generated artifacts are stored in S3 buckets. Depending on the degree of control we'd like for each container-task definition, we can use the so called *high level* or *low level* APIs.
 
 The file [`assets/sagemaker_examples.py`](assets/sagemaker_examples.py) contains code blocks that can be re-used to build an application as the one defined and deployed in this repository; the following diagram shows how the different code blocks are related:
 
@@ -169,18 +212,49 @@ The file [`assets/sagemaker_examples.py`](assets/sagemaker_examples.py) contains
   <img src="./assets/sagemaker_examples_workflow.png" alt="SageMaker Examples Workflow" width=750px>
 </p>
 
+However, note that:
 
-## Brief Notes on LSTM-Based Neural Networks
+- These code blocks are barely explained in the script, i.e., they're intended for the user who knows what's going on but in need for the correct API call with context; if you'd like to have a more detailed guide on AWS SageMaker, I suggest checking my notes in the file [`DLND_Deployment.md`](https://github.com/mxagar/deep_learning_udacity/blob/main/06_Deployment/DLND_Deployment.md).
+- The workflow and file constellation used in the present repository are somewhat different to the one used in the exemplary code blocks, because the project defines, trains and deploys a custom Pytorch model. That requires creating custom containers with manually defined entry points or executed scripts. The differences and the required approach are detailed in the project notebook.
 
-:construction:
+## Brief Notes on the Chosen Model
+
+The model chosen for 
+
+
+## Preliminary Results
+
+
+Irony and sarcasm
+Types of negations
+Word ambiguity
+Multipolarity
+
+<p align="center">
+  <img src="./src/website/review_3.png" alt="Example review." width=500px>
+</p>
+
+<p align="center">
+  <img src="./src/website/review_4.png" alt="Example review." width=500px>
+</p>
+
+<p align="center">
+  <img src="./src/website/review_1.png" alt="Example review." width=500px>
+</p>
+
+<p align="center">
+  <img src="./src/website/review_2.png" alt="Example review." width=500px>
+</p>
 
 ## Improvements, Next Steps
 
 :construction:
 
 - [ ] Improve the html web app.
-- [ ] Improve the model: add more layers.
+- [ ] Improve the model: try more layers.
+- [ ] Test more thoroughly irony an sarcasm.
 - [ ] Use AWS SageMaker Studio instead of the notebook instances.
+- [ ] Upgrade the required SageMaker version.
 
 ## Interesting Links
 
@@ -192,6 +266,7 @@ The file [`assets/sagemaker_examples.py`](assets/sagemaker_examples.py) contains
 - [Understanding LSTM Networks, by Chris Olah](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)
 - [Exploring LSTMs, by Edwin Chen](http://blog.echen.me/2017/05/30/exploring-lstms/)
 - [Karpathy's Lecture: Recurrent Neural Networks, Image Captioning, LSTM](https://www.youtube.com/watch?v=iX5V1WpxxkY)
+- [Using Docker containers with SageMaker](https://docs.aws.amazon.com/sagemaker/latest/dg/docker-containers.html).
 
 
 ## Authorship
