@@ -8,6 +8,8 @@ The dataset used for training is the [IMDB dataset](http://ai.stanford.edu/~amaa
 
 > Maas, Andrew L., et al. [Learning Word Vectors for Sentiment Analysis](http://ai.stanford.edu/~amaas/data/sentiment/). In _Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies_. Association for Computational Linguistics, 2011.
 
+Please note that **the project focuses on the deployment process/techniques rather than the model efficiency.**
+
 Table of Contents:
 
 - [Sentiment Analysis RNN Deployed Using AWS SageMaker](#sentiment-analysis-rnn-deployed-using-aws-sagemaker)
@@ -221,9 +223,13 @@ However, note that:
 
 Sentiment analysis models have difficulties with irony and sarcasm, word ambiguity, or when previous sentences are negated, among other challenges. For these cases a model that works with sequences is probably better suited than one that scores bags of words, because decisive nuances often can be captured from the word sequence as a whole (i.e., the text), but not observing the individual scrambled words alone.
 
-The model chosen for the sentiment classification is a Recurrent Neural Network (RNN) based on Long Short-Term Memory (LSTM) units. These networks are particularly efficient at modeling long sequences of vectors. More information on the pre-processing which is necessary and how the models work is provided in my repository [text_sentiment](https://github.com/mxagar/text_sentiment).
+The model chosen for the sentiment classification is a Recurrent Neural Network (RNN) based on Long Short-Term Memory (LSTM) units. These networks are particularly efficient at modeling long sequences of vectors. More information on the text pre-processing which is necessary and how these models work is provided in my repository [text_sentiment](https://github.com/mxagar/text_sentiment).
 
-However, it is worth noting that gradient boosting models (e.g., XGBoost) or tree-based models (e.g., random forests) often outperform neural networks with tabular data. One could consider a text vectorized as a bag of words a tabular dataset; in fact, 
+However, it is worth noting that gradient boosting models (e.g., XGBoost) or tree-based models (e.g., random forests) often outperform neural networks with tabular data. One could consider a text vectorized as a bag of words to be a tabular data point. Also, consider the fact that the majority of the reviews have a straightforward style, thus, observing the valence/sentiment value of the words used in them should lead to enough information on the overall sentiment of the text.
+
+Finally, we should take into account that neural networks require larger corpora than the one used in this project in order to become really efficient.
+
+All in all, the focus of this project lies more on the techniques used for deployment on AWS SageMaker rather than defining an efficient model.
 
 ## Preliminary Results
 
@@ -259,7 +265,7 @@ Some examples:
 
 - [My notes and code](https://github.com/mxagar/deep_learning_udacity) on the [Udacity Deep Learning Nanodegree](https://www.udacity.com/course/deep-learning-nanodegree--nd101). A more detailed guide on AWS SageMaker can be found in the file [`DLND_Deployment.md`](https://github.com/mxagar/deep_learning_udacity/blob/main/06_Deployment/DLND_Deployment.md) from that repository.
 - Tutorial on how to use AWS SageMaker: [sagemaker-deployment](https://github.com/mxagar/sagemaker-deployment).
-- My on-going compilation of resources for [text sentiment analysis](https://github.com/mxagar/text_sentiment).
+- My on-going compilation of resources for [text sentiment analysis](https://github.com/mxagar/text_sentiment), with related text pre-processing and model explanations.
 - More examples with RNNs using Pytorch: [Pytorch Guide](https://github.com/mxagar/deep_learning_udacity/blob/main/02_Pytorch_Guide/DL_Pytorch_Guide.md) (Section "Recursive Neural Networks").
 - My [NLP Guide](https://github.com/mxagar/nlp_guide).
 - [Understanding LSTM Networks, by Chris Olah](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)
