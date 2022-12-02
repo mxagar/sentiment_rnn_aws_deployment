@@ -190,7 +190,7 @@ Therefore, the usual solution, and the one adopted here, consists in using an **
   <img src="./src/Web_App_Diagram.svg" alt="Web app architecture." width=500px>
 </p>
 
-Note that the user interacts with a simple GUI implemented in an HTML form; however, the API Gateway can be intefaced by any system that speaks HTTP methods, since it's in reality a REST API.
+Note that the user interacts with a simple GUI implemented in an HTML form; however, the API Gateway can be interfaced by any system that speaks HTTP methods, since it's in reality a REST API.
 
 Lambda functions have become extremely popular in cloud computing, since they allow *serverless* simple processings or interactions with a backend. That means we don't need to spin up a container / VM / server to execute the code in the lambda function, it is executed for the user seamlessly &mdash; of course, there's a server running behind, but we don't care about setting it up.
 
@@ -219,16 +219,17 @@ However, note that:
 
 ## Brief Notes on the Chosen Model
 
-The model chosen for 
+Sentiment analysis models have difficulties with irony and sarcasm, word ambiguity, or when previous sentences are negated, among other challenges. For these cases a model that works with sequences is probably better suited than one that scores bags of words, because decisive nuances often can be captured from the word sequence as a whole (i.e., the text), but not observing the individual scrambled words alone.
 
+The model chosen for the sentiment classification is a Recurrent Neural Network (RNN) based on Long Short-Term Memory (LSTM) units. These networks are particularly efficient at modeling long sequences of vectors. More information on the pre-processing which is necessary and how the models work is provided in my repository [text_sentiment](https://github.com/mxagar/text_sentiment).
+
+However, it is worth noting that gradient boosting models (e.g., XGBoost) or tree-based models (e.g., random forests) often outperform neural networks with tabular data. One could consider a text vectorized as a bag of words a tabular dataset; in fact, 
 
 ## Preliminary Results
 
+The model seems to work nicely with easy reviews where no irony or meaning changes are conveyed. In contrast, when those properties are introduced, it starts to fail. However, note that **the focus of the project lies on the AWS deployment**, rather than on the efficiency of the network.
 
-Irony and sarcasm
-Types of negations
-Word ambiguity
-Multipolarity
+Some examples:
 
 <p align="center">
   <img src="./src/website/review_3.png" alt="Example review." width=500px>
@@ -248,13 +249,11 @@ Multipolarity
 
 ## Improvements, Next Steps
 
-:construction:
-
 - [ ] Improve the html web app.
-- [ ] Improve the model: try more layers.
+- [ ] Improve the model: try more layers; train longer; get a bigger dataset.
 - [ ] Test more thoroughly irony an sarcasm.
 - [ ] Use AWS SageMaker Studio instead of the notebook instances.
-- [ ] Upgrade the required SageMaker version.
+- [ ] Upgrade the required SageMaker version (to V2).
 
 ## Interesting Links
 
